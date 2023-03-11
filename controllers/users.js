@@ -12,9 +12,14 @@ module.exports.createUser = (req, res) => {
 }
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
-    .then(user => res.send({ data: user }))
+  .then((user) => {
+    if (user == null) {
+      return res.status(404).send({ message: `Пользователь с указанным _id:${req.user._id} не найден.` })
+    }
+    res.send({ data: user })
+  })
     // eslint-disable-next-line no-unused-vars
-    .catch(err => res.status(404).send({ message: "Запрашиваемый пользователь не найден" }))
+    .catch(err => res.status(400).send({ message: "Запрашиваемый пользователь не найден" }))
     .catch(err => res.status(500).send({ message: err.message }))
 }
 module.exports.getUser = (req, res) => {

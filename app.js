@@ -21,6 +21,9 @@ app.use((req, res, next) => {
 
 app.use('/', routerUser)
 app.use('/', routerCard)
+app.patch('*', function(req, res){
+  res.status(404).send({ message: "Запрашиваемая страница не найдена" });
+});
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 

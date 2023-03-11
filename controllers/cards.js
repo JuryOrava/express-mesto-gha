@@ -18,7 +18,13 @@ module.exports.getCards = (req, res) => {
 }
 module.exports.deleteCard = (req, res) => {
   Card.findByIdAndRemove(req.params.cardId)
-    .then(card => res.send({ data: card }))
+  .then((card) => {
+    // eslint-disable-next-line no-cond-assign
+    if (card == null) {
+      return res.status(404).send({ message: `Передан несуществующий _id:${req.params.cardId} карточки.` })
+    }
+    res.send({ data: card })
+  })
     // eslint-disable-next-line no-unused-vars
     .catch(err => res.status(400).send({ message: `Карточка с указанным _id:${req.params.cardId} не найдена.` }))
     .catch(err => res.status(500).send({ message: err.message }))
