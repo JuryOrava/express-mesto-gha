@@ -1,1 +1,0 @@
-Дата и время ошибки: Sun Mar 12 2023 11:44:04 GMT+0300 (Москва, стандартное время); Текст ошибки: Cast to ObjectId failed for value "text" (type string) at path "_id" for model "card"
