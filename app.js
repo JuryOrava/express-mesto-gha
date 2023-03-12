@@ -4,6 +4,8 @@ const bodyParser = require('body-parser')
 const routerUser = require('./routes/users')
 const routerCard = require('./routes/cards')
 
+const ERROR_CODE = 404;
+
 const { PORT = 3000 } = process.env
 
 const app = express()
@@ -22,7 +24,7 @@ app.use((req, res, next) => {
 app.use('/', routerUser)
 app.use('/', routerCard)
 app.patch('*', function(req, res){
-  res.status(404).send({ message: "Запрашиваемая страница не найдена" });
+  res.status(ERROR_CODE).send({ message: "Запрашиваемая страница не найдена" });
 });
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
