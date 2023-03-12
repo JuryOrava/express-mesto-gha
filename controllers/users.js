@@ -62,7 +62,7 @@ module.exports.editProfile = (req, res) => {
   )
   .then(user => res.send({ data: user }))
   .catch(err => {
-    if (err.name == 'CastError') {
+    if (err.name == 'ValidationError') {
       res.status(CAST_ERROR_CODE).send({ message: `Переданы некорректные данные при обновлении профиля.` })
     } else {
       writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()}; Текст ошибки: ${err.message}`)
