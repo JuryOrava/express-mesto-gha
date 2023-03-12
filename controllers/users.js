@@ -6,6 +6,7 @@ const serverErrorFile = `./controllers/server-err-logs/log-${date}.txt`
 
 const ERROR_CODE = 404;
 const CAST_ERROR_CODE = 400;
+const SERVER_ERROR_CODE = 500;
 
 module.exports.createUser = (req, res) => {
   const { name, about, avatar } = req.body
@@ -13,9 +14,10 @@ module.exports.createUser = (req, res) => {
   User.create({ name, about, avatar })
     .then(user => res.send({ data: user }))
     .catch(err => {
-      if (err.name == 'CastError') {
+      if (err.name == 'ValidationError') {
         res.status(CAST_ERROR_CODE).send({ message: `Переданы некорректные данные при создании пользователя.` })
       } else {
+        res.send({ message: `Сервер не доступен.` })
         writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()}; Текст ошибки: ${err.message}`)
       }
     })

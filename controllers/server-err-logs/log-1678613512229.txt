@@ -1,0 +1,1 @@
+Дата и время ошибки: Sun Mar 12 2023 12:31:54 GMT+0300 (Москва, стандартное время); Текст ошибки: user validation failed: name: Path `name` (`s`) is shorter than the minimum allowed length (2)., avatar: Path `avatar` is required.

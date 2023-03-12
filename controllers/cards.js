@@ -13,9 +13,10 @@ module.exports.createCard = (req, res) => {
   Card.create({ name, link, owner: req.user._id })
     .then(card => res.send({ data: card }))
     .catch(err => {
-      if (err.name == 'CastError') {
+      if (err.name == 'ValidationError') {
         res.status(CAST_ERROR_CODE).send({ message: `Переданы некорректные данные при создании карточки.` })
       } else {
+        res.send({ message: `Сервер не доступен.` })
         writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()}; Текст ошибки: ${err.message}`)
       }
     })
