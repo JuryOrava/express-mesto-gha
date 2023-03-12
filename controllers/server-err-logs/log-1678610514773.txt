@@ -1,1 +1,0 @@
-Дата и время ошибки: 1678610514773; Текст ошибки: Cast to ObjectId failed for value "text" (type string) at path "_id" for model "card"
