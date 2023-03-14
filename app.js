@@ -31,9 +31,9 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.patch('*', (err, res) => {
+/* app.patch('*', (err, res) => {
   res.status(404).send({ message: 'Запрашиваемая страница не найдена' });
-});
+}); */
 
 app.use(auth);
 app.use('/', routerUser);
