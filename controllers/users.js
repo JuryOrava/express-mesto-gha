@@ -58,8 +58,16 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUserInfo = (req, res, next) => {
-  User.findById(req.user._id)
-    .then((user) => res.send({ name: user.name, about: user.about, avatar: user.avatar }))
+  User.findById(req.user.email)
+    .then((user) => {
+      res.status(201).send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+        _id: user._id,
+      });
+    })
     .catch(next);
 };
 
