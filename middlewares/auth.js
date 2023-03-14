@@ -1,12 +1,18 @@
 const jwt = require('jsonwebtoken');
 
-function handleAuthError(res) { res.status(401).send({ message: 'Необходима авторизация' }); }
+const handleAuthError = (res) => {
+  res
+    .status(401)
+    .send({ message: 'Необходима авторизация' });
+};
 
-function extractBearerToken(header) {
+// eslint-disable-next-line arrow-body-style
+const extractBearerToken = (header) => {
   return header.replace('Bearer ', '');
-}
+};
 
-const Auth = function AuthorizationUser(req, res, next) {
+// eslint-disable-next-line consistent-return
+module.exports = (req, res, next) => {
   const { authorization } = req.headers;
 
   if (!authorization || !authorization.startsWith('Bearer ')) {
@@ -22,9 +28,7 @@ const Auth = function AuthorizationUser(req, res, next) {
     return handleAuthError(res);
   }
 
-  req.user = payload;
+  req.user = payload; // записываем пейлоуд в объект запроса
 
-  next();
+  next(); // пропускаем запрос дальше
 };
-
-module.exports = Auth;

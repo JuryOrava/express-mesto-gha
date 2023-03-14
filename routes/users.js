@@ -8,7 +8,7 @@ routerUser.get('/users', getUsers);
 
 routerUser.get('/users/:userId', celebrate({
   body: Joi.object().keys({
-    _id: Joi.string().min(2).max(30), // ВАЛИДАЦИЯ ИД
+    _id: Joi.objectId(), // ВАЛИДАЦИЯ ИД
   }),
 }), getUserById);
 
