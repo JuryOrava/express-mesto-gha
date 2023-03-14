@@ -27,15 +27,18 @@ module.exports.getCards = (req, res, next) => {
     .catch(next);
 };
 module.exports.deleteCard = (req, res, next) => {
-  /*  */
-  Card.findByIdAndRemove(req.params.cardId)
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (card == null) {
         next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
-      } else if (req.user._id !== res.body.owner._id) {
-        next(new ClientError('Этой чужая карточка. Ай-яй-яй'));
+      }
+      if (req.user._id === res.body.owner._id) {
+        Card.findByIdAndRemove(req.params.cardId)
+          .then((cards) => {
+            res.send({ data: cards });
+          });
       } else {
-        res.send({ data: card });
+        next(new ClientError('Этой чужая карточка. Ай-яй-яй'));
       }
     })
     .catch((err) => {
