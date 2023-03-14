@@ -1,5 +1,6 @@
 const routerUser = require('express').Router();
 const { celebrate, Joi } = require('celebrate');
+Joi.objectId = require('joi-objectid')(Joi);
 const {
   getUsers, getUserById, editProfile, editAvatar, getUserInfo,
 } = require('../controllers/users');
@@ -8,7 +9,7 @@ routerUser.get('/users', getUsers);
 
 routerUser.get('/users/:userId', celebrate({
   body: Joi.object().keys({
-    _id: Joi.objectId(), // ВАЛИДАЦИЯ ИД
+    _id: Joi.objectId(),
   }),
 }), getUserById);
 
