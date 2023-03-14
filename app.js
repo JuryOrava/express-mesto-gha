@@ -5,7 +5,7 @@ const { celebrate, Joi, errors } = require('celebrate');
 const routerUser = require('./routes/users');
 const routerCard = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
-// const auth = require('./middlewares/auth');
+const auth = require('./middlewares/auth');
 
 const { writeTextToFile } = require('./errors/server-err-logs/error-logs');
 
@@ -40,7 +40,7 @@ app.patch('/404', (err, res) => {
   res.status(404).send({ message: 'Запрашиваемая страница не найдена' });
 });
 
-// app.use(auth);
+app.use(auth);
 app.use('/', routerUser);
 app.use('/', routerCard);
 
