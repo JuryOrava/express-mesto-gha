@@ -5,7 +5,7 @@ const { celebrate, Joi, errors } = require('celebrate');
 const routerUser = require('./routes/users');
 const routerCard = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
-const auth = require('./middlewares/auth');
+// const auth = require('./middlewares/auth');
 
 const { writeTextToFile } = require('./errors/server-err-logs/error-logs');
 
@@ -36,11 +36,11 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.patch('*', (err, res) => {
+app.patch('/404', (err, res) => {
   res.status(404).send({ message: 'Запрашиваемая страница не найдена' });
 });
 
-app.use(auth);
+// app.use(auth);
 app.use('/', routerUser);
 app.use('/', routerCard);
 
@@ -51,8 +51,8 @@ mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
 // eslint-disable-next-line no-unused-vars
 app.use((err, req, res, next) => {
   if (err.statusCode === undefined) {
-    writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()}; Текст ошибки: ${err.message}`);
     res.status(500).send({ message: 'На сервере произошла ошибка.' });
+    writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()}; Текст ошибки: ${err.message}`);
   } else {
     res.status(err.statusCode).send({ message: err.message });
   }
