@@ -1,16 +1,11 @@
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-const { writeTextToFile } = require('../errors/server-err-logs/error-logs');
 
 const NotFoundError = require('../errors/not-found-err'); // 404
 const BadRequesrError = require('../errors/bad-request-err'); // 400
 const ClientError = require('../errors/client-err'); // 401
 const ConflictingRequestError = require('../errors/conflicting-request-err'); // 409
-const InternalServerError = require('../errors/internal-server-err'); // 500
-
-const date = Date.now();
-const serverErrorFile = `../errors/server-err-logs/log-${date}.txt`;
 
 module.exports.createUser = (req, res, next) => {
   bcrypt.hash(req.body.password, 10)
@@ -35,9 +30,6 @@ module.exports.createUser = (req, res, next) => {
         throw new ConflictingRequestError('Пользователь с таким Email уже существует!');
       } else if (err.name === 'ValidationError') {
         throw new ClientError(`Введен некорректный логин или пароль. ${err.name}`);
-      } else {
-        writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()}; Текст ошибки: ${err.message}`);
-        throw new InternalServerError('На сервере произошла ошибка.');
       }
     })
     .catch(next);
@@ -47,16 +39,13 @@ module.exports.getUserById = (req, res, next) => {
   User.findById(req.params.userId)
     .then((user) => {
       if (user == null) {
-        throw new NotFoundError(`Пользователь с указанным _id:${req.user._id} не найден.`);
+        next(new NotFoundError(`Пользователь с указанным _id:${req.params.userId} не найден.`));
       }
       res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequesrError('Переданы некорректные данные при запросе пользователя.');
-      } else {
-        writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()}; Текст ошибки: ${err.message}`);
-        throw new InternalServerError('На сервере произошла ошибка.');
       }
     })
     .catch(next);
@@ -65,20 +54,12 @@ module.exports.getUserById = (req, res, next) => {
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((user) => res.send({ data: user }))
-    .catch((err) => {
-      writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()}; Текст ошибки: ${err.message}`);
-      throw new InternalServerError('На сервере произошла ошибка.');
-    })
     .catch(next);
 };
 
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => res.send({ name: user.name, about: user.about, avatar: user.avatar }))
-    .catch((err) => {
-      writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()}; Текст ошибки: ${err.message}`);
-      throw new InternalServerError('На сервере произошла ошибка.');
-    })
     .catch(next);
 };
 
@@ -93,9 +74,6 @@ module.exports.editProfile = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'ValidationError') {
         throw new BadRequesrError('Переданы некорректные данные при обновлении профиля.');
-      } else {
-        writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()}; Текст ошибки: ${err.message}`);
-        throw new InternalServerError('На сервере произошла ошибка.');
       }
     })
     .catch(next);
@@ -112,9 +90,6 @@ module.exports.editAvatar = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequesrError('Переданы некорректные данные при обновлении профиля.');
-      } else {
-        writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()}; Текст ошибки: ${err.message}`);
-        throw new InternalServerError('На сервере произошла ошибка.');
       }
     })
     .catch(next);
@@ -131,10 +106,6 @@ module.exports.login = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'Error') {
         throw new ClientError('Введен некорректный логин или пароль.'); // ПРОВЕРИТЬ ОШИБКУ
-      } else {
-        writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()};
-        Текст ошибки: ${err.message}`);
-        throw new InternalServerError('На сервере произошла ошибка.');
       }
     })
     .catch(next);
