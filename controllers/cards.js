@@ -27,11 +27,11 @@ module.exports.getCards = (req, res, next) => {
     .catch(next);
 };
 module.exports.deleteCard = (req, res, next) => {
-  /* if (req.user._id === req.params.owner._id) { */
+  /* if (req.user._id === res.body.owner._id) { */
   Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (card == null) {
-        throw new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`);
+        next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
       }
       res.send({ data: card });
     })
@@ -41,6 +41,9 @@ module.exports.deleteCard = (req, res, next) => {
       }
     })
     .catch(next);
+  /* } else {
+    next(new ClientError('Этой чужая карточка. Ай-яй-яй'));
+  } */
 };
 
 module.exports.likeCard = (req, res, next) => {
@@ -51,7 +54,7 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (card == null) {
-        throw new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`);
+        next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
       }
       res.send({ data: card });
     })
@@ -71,7 +74,7 @@ module.exports.dislikeCard = (req, res, next) => {
   )
     .then((card) => {
       if (card == null) {
-        throw new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`);
+        next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
       }
       res.send({ data: card });
     })
