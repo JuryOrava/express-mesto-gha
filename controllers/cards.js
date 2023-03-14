@@ -2,7 +2,7 @@ const Card = require('../models/card');
 
 const NotFoundError = require('../errors/not-found-err'); // 404
 const BadRequesrError = require('../errors/bad-request-err'); // 400
-const ClientError = require('../errors/client-err'); // 401
+// const ClientError = require('../errors/client-err'); // 401
 
 module.exports.createCard = (req, res, next) => {
   const {
@@ -27,18 +27,12 @@ module.exports.getCards = (req, res, next) => {
     .catch(next);
 };
 module.exports.deleteCard = (req, res, next) => {
-  Card.findById(req.params.cardId)
+  Card.findByIdAndRemove(req.params.cardId)
     .then((card) => {
       if (card == null) {
         next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
-      }
-      if (req.user._id === res.body.owner._id) {
-        Card.findByIdAndRemove(req.params.cardId)
-          .then((cards) => {
-            res.send({ data: cards });
-          });
       } else {
-        next(new ClientError('Этой чужая карточка. Ай-яй-яй'));
+        res.send({ data: card });
       }
     })
     .catch((err) => {
@@ -76,7 +70,7 @@ module.exports.dislikeCard = (req, res, next) => {
     { new: true },
   )
     .then((card) => {
-      if (card == null) {
+      if (card === 'null') {
         next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
       }
       res.send({ data: card });
