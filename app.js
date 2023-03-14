@@ -1,10 +1,11 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const { celebrate, Joi, errors } = require('celebrate');
 const routerUser = require('./routes/users');
 const routerCard = require('./routes/cards');
-
-const ERROR_CODE = 404;
+const { login, createUser } = require('./controllers/users');
+// const auth = require('./middlewares/auth');
 
 const { PORT = 3000 } = process.env;
 
@@ -13,21 +14,30 @@ const app = express();
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-app.use((req, res, next) => {
-  req.user = {
-    _id: '640c54cc67c05a894fba0dc5', // вставьте сюда _id созданного в предыдущем пункте пользователя
-  };
+app.post('/signin', login);
+app.post('/signup', celebrate({
+  body: Joi.object().keys({
+    email: Joi.string().required().email(),
+    password: Joi.string().required(),
+  }),
+}), createUser);
 
-  next();
+app.patch('*', (err, res) => {
+  res.status(404).send({ message: 'Запрашиваемая страница не найдена' });
 });
 
+// app.use(auth);
 app.use('/', routerUser);
 app.use('/', routerCard);
-app.patch('*', (req, res) => {
-  res.status(ERROR_CODE).send({ message: 'Запрашиваемая страница не найдена' });
-});
+
+app.use(errors());
 
 mongoose.connect('mongodb://127.0.0.1:27017/mestodb');
+
+// eslint-disable-next-line no-unused-vars
+app.use((err, req, res, next) => {
+  res.status(err.statusCode).send({ message: err.message });
+});
 
 app.listen(PORT, () => {
   console.log(`App listening on port ${PORT}`);
