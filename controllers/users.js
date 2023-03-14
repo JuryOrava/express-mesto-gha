@@ -124,7 +124,7 @@ module.exports.login = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'Error') {
-        throw new BadRequesrError('Введен некорректный логин или пароль.'); // ПРОВЕРИТЬ ОШИБКУ
+        throw new ClientError('Введен некорректный логин или пароль.'); // ПРОВЕРИТЬ ОШИБКУ
       } else {
         writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()};
         Текст ошибки: ${err.message}`);
