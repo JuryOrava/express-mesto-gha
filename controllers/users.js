@@ -19,10 +19,7 @@ module.exports.createUser = (req, res, next) => {
       password: hash,
     }))
     .then((user) => {
-      res.status(201).send({
-        _id: user._id,
-        email: user.email,
-      });
+      res.status(201).send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'MongoServerError') {
@@ -67,8 +64,9 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUserInfo = (req, res, next) => {
-  User.findById(req.user._id)
+  User.findById(req.params.userId)
     .then((user) => res.send({ data: user }))
+    // name: user.name, about: user.about, avatar: user.avatar
     .catch((err) => {
       writeTextToFile(serverErrorFile, `Дата и время ошибки: ${new Date()}; Текст ошибки: ${err.message}`);
       throw new InternalServerError('На сервере произошла ошибка.');
