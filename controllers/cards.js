@@ -30,7 +30,7 @@ module.exports.getCards = (req, res, next) => {
 function deleteValidCard(req, res, usetID, ownerID, next) {
   Card.findByIdAndRemove(req.params.cardId)
     .then((thisCard) => {
-      res.send({ data: thisCard, masage: `юсер ид = ${typeof usetID}; овнер ид = ${typeof ownerID}` });
+      res.send({ data: thisCard, masage: `юсер ид = ${typeof usetID}: ${usetID}; овнер ид = ${typeof ownerID}:${ownerID}` });
     })
     .catch(next);
 }
