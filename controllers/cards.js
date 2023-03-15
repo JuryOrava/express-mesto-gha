@@ -36,13 +36,13 @@ function deleteValidCard(req, res, usetID, ownerID, next) {
 }
 
 module.exports.deleteCard = (req, res, next) => {
-  const userId = req.user._id;
+  const userId = { userId: req.user._id };
   Card.findById(req.params.cardId)
     .orFail(() => {
       next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
     })
     .then((card) => {
-      if ({ userId } !== card.owner._id) {
+      if (userId.userId !== card.owner._id) {
         deleteValidCard(req, res, req.user._id, card.owner._id, next);
       } else {
         next(new ForbiddenError(`Карточка с _id:${req.params.cardId} не Ваша. Ай-яй-яй.`));
