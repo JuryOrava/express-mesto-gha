@@ -7,13 +7,13 @@ const {
 
 routerUser.get('/users', getUsers);
 
+routerUser.get('/users/me', getUserInfo);
+
 routerUser.get('/users/:userId', celebrate({
   params: Joi.object().keys({
     userId: Joi.objectId().required(),
   }),
 }), getUserById);
-
-routerUser.get('/users/me', getUserInfo);
 
 routerUser.patch('/users/me', celebrate({
   body: Joi.object().keys({
