@@ -36,6 +36,9 @@ function deleteValidCard(req, res) {
 
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
+    .orFail(() => {
+      next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
+    })
     .then((card) => {
       if (req.user._id === card.owner._id) {
         deleteValidCard(req, res);
