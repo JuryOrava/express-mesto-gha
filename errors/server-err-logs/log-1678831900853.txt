@@ -1,1 +1,0 @@
-Дата и время ошибки: Wed Mar 15 2023 01:11:46 GMT+0300 (Москва, стандартное время); Текст ошибки: Cannot read properties of undefined (reading '_id')
