@@ -26,14 +26,19 @@ module.exports.getCards = (req, res, next) => {
     .then((cards) => res.send({ data: cards }))
     .catch(next);
 };
+
+function deleteValidCard(req, res) {
+  Card.findByIdAndRemove(req.params.cardId)
+    .then((thisCard) => {
+      res.send({ data: thisCard });
+    });
+}
+
 module.exports.deleteCard = (req, res, next) => {
   Card.findById(req.params.cardId)
     .then((card) => {
       if (req.user._id === card.owner._id) {
-        Card.findByIdAndRemove(req.params.cardId)
-          .then((thisCard) => {
-            res.send({ data: thisCard });
-          });
+        deleteValidCard(req, res);
       } else {
         next(new ForbiddenError(`Карточка с _id:${req.params.cardId} не Ваша. Ай-яй-яй.`));
       }
@@ -72,10 +77,10 @@ module.exports.dislikeCard = (req, res, next) => {
     { $pull: { likes: req.user._id } },
     { new: true },
   )
+    .orFail(() => {
+      next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
+    })
     .then((card) => {
-      if (card === 'null') {
-        next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
-      }
       res.send({ data: card });
     })
     .catch((err) => {
