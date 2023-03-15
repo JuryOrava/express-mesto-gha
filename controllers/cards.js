@@ -2,7 +2,7 @@ const Card = require('../models/card');
 
 const NotFoundError = require('../errors/not-found-err'); // 404
 const BadRequesrError = require('../errors/bad-request-err'); // 400
-const ForbiddenError = require('../errors/forbidden-err'); // 401
+const ForbiddenError = require('../errors/forbidden-err'); // 403
 
 module.exports.createCard = (req, res, next) => {
   const {
@@ -43,6 +43,8 @@ module.exports.deleteCard = (req, res, next) => {
       if (req.user._id === card.owner._id) {
         deleteValidCard(req, res);
       } else {
+        console.log(`${req.user._id}, ${card.owner._id}`); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!
+        res.send(`${req.user._id}, ${card.owner._id}`); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!
         next(new ForbiddenError(`Карточка с _id:${req.params.cardId} не Ваша. Ай-яй-яй.`));
       }
     })
