@@ -27,10 +27,10 @@ module.exports.getCards = (req, res, next) => {
     .catch(next);
 };
 
-function deleteValidCard(req, res) {
+function deleteValidCard(req, res, userID, ownerID) {
   Card.findByIdAndRemove(req.params.cardId)
     .then((thisCard) => {
-      res.send({ data: thisCard });
+      res.send({ data: thisCard, massage: `${userID}; ${ownerID}` });
     });
 }
 
@@ -41,7 +41,7 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .then((card) => {
       if (req.user._id !== card.owner._id) {
-        deleteValidCard(req, res);
+        deleteValidCard(req, res, req.user._id, card.owner._id);
       } else {
         next(new ForbiddenError(`Карточка с _id:${req.params.cardId} не Ваша. Ай-яй-яй.`));
       }
