@@ -26,13 +26,13 @@ module.exports.createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      if (err.name === 'MongoServerError') {
+      if (err.code === 11000) {
         throw new ConflictingRequestError('Пользователь с таким Email уже существует!');
       } else if (err.name === 'ValidationError') {
         throw new ClientError(`Введен некорректный логин или пароль. ${err.name}`);
       }
-    })
-    .catch(next);
+      next();
+    });
 };
 
 module.exports.getUserById = (req, res, next) => {
@@ -40,15 +40,16 @@ module.exports.getUserById = (req, res, next) => {
     .then((user) => {
       if (user == null) {
         next(new NotFoundError(`Пользователь с указанным _id:${req.params.userId} не найден.`));
+      } else {
+        res.send({ data: user });
       }
-      res.send({ data: user });
     })
     .catch((err) => {
       if (err.name === 'CastError') {
         throw new BadRequesrError('Переданы некорректные данные при запросе пользователя.');
       }
-    })
-    .catch(next);
+      next();
+    });
 };
 
 module.exports.getUsers = (req, res, next) => {
@@ -83,8 +84,8 @@ module.exports.editProfile = (req, res, next) => {
       if (err.name === 'ValidationError') {
         throw new BadRequesrError('Переданы некорректные данные при обновлении профиля.');
       }
-    })
-    .catch(next);
+      next();
+    });
 };
 
 module.exports.editAvatar = (req, res, next) => {
@@ -99,8 +100,8 @@ module.exports.editAvatar = (req, res, next) => {
       if (err.name === 'CastError') {
         throw new BadRequesrError('Переданы некорректные данные при обновлении профиля.');
       }
-    })
-    .catch(next);
+      next();
+    });
 };
 
 module.exports.login = (req, res, next) => {
@@ -110,12 +111,6 @@ module.exports.login = (req, res, next) => {
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, 'some-secret-key', { expiresIn: '7d' });
       res.send({ token }); // записывать JWT в httpOnly куку!
-      console.log();
-    })
-    .catch((err) => {
-      if (err.name === 'Error') {
-        throw new ClientError('Введен некорректный логин или пароль.'); // ПРОВЕРИТЬ ОШИБКУ
-      }
     })
     .catch(next);
 };

@@ -6,6 +6,7 @@ const auth = require('./middlewares/auth');
 const routerUser = require('./routes/users');
 const routerCard = require('./routes/cards');
 const { login, createUser } = require('./controllers/users');
+const NotFoundError = require('./errors/not-found-err');
 
 const { writeTextToFile } = require('./errors/server-err-logs/error-logs');
 
@@ -36,13 +37,12 @@ app.post('/signup', celebrate({
   }),
 }), createUser);
 
-app.patch('/404', (err, res) => {
-  res.status(404).send({ message: 'Запрашиваемая страница не найдена' });
-});
+app.use('/', auth, routerUser);
+app.use('/', auth, routerCard);
 
-app.use(auth);
-app.use('/', routerUser);
-app.use('/', routerCard);
+app.patch('*', (err, res, next) => {
+  next(new NotFoundError('Запрашиваемая страница не найдена'));
+});
 
 app.use(errors());
 

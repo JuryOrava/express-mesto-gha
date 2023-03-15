@@ -2,7 +2,7 @@
 logs
 *.log
 npm-debug.log*
-controllers/server-err-logs/log*
+errors/server-err-logs/log*
 
 # Dependency directory
 node_modules
