@@ -57,8 +57,8 @@ module.exports.getUsers = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUserInfo = (req, res, next) => {
-  User.findById(req.user._id)
+module.exports.getUserInfo = (req, payload, res, next) => {
+  User.findById(payload.user._id)
     .then((user) => {
       res.status(200).send({
         name: user.name,

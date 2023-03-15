@@ -27,10 +27,10 @@ module.exports.getCards = (req, res, next) => {
     .catch(next);
 };
 
-function deleteValidCard(req, res, user, ownerID, next) {
+function deleteValidCard(req, res, next) {
   Card.findByIdAndRemove(req.params.cardId)
     .then((thisCard) => {
-      res.send({ data: thisCard, user: `${user};`, massage: `${ownerID}` });
+      res.send({ data: thisCard });
     })
     .catch(next);
 }
@@ -41,7 +41,7 @@ module.exports.deleteCard = (req, res, next) => {
       next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
     })
     .then((card) => {
-      if (req.user._id !== card.owner._id) {
+      if (req.user._id === card.owner._id) {
         deleteValidCard(req, res, req.user, card.owner._id, next);
       } else {
         next(new ForbiddenError(`Карточка с _id:${req.params.cardId} не Ваша. Ай-яй-яй.`));
