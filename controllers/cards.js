@@ -28,7 +28,7 @@ module.exports.getCards = (req, res, next) => {
 };
 
 function deleteValidCard(req, res) {
-  Card.findByIdAndRemove(req.params.cardId)
+  return Card.findByIdAndRemove(req.params.cardId)
     .then((thisCard) => {
       res.send({ data: thisCard });
     });
