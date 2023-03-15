@@ -27,11 +27,10 @@ module.exports.createUser = (req, res, next) => {
     })
     .catch((err) => {
       if (err.code === 11000) {
-        throw new ConflictingRequestError('Пользователь с таким Email уже существует!');
+        next(new ConflictingRequestError('Пользователь с таким Email уже существует!'));
       } else if (err.name === 'ValidationError') {
-        throw new ClientError(`Введен некорректный логин или пароль. ${err.name}`);
+        next(new ClientError(`Введен некорректный логин или пароль. ${err.name}`));
       }
-      next();
     });
 };
 
@@ -46,9 +45,8 @@ module.exports.getUserById = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequesrError('Переданы некорректные данные при запросе пользователя.');
+        next(new BadRequesrError('Переданы некорректные данные при запросе пользователя.'));
       }
-      next();
     });
 };
 
@@ -82,9 +80,8 @@ module.exports.editProfile = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        throw new BadRequesrError('Переданы некорректные данные при обновлении профиля.');
+        next(new BadRequesrError('Переданы некорректные данные при обновлении профиля.'));
       }
-      next();
     });
 };
 
@@ -98,9 +95,8 @@ module.exports.editAvatar = (req, res, next) => {
     .then((user) => res.send({ data: user }))
     .catch((err) => {
       if (err.name === 'CastError') {
-        throw new BadRequesrError('Переданы некорректные данные при обновлении профиля.');
+        next(new BadRequesrError('Переданы некорректные данные при обновлении профиля.'));
       }
-      next();
     });
 };
 
