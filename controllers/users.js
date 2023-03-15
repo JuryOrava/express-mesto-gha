@@ -57,8 +57,8 @@ module.exports.getUsers = (req, res, next) => {
     .catch(next);
 };
 
-module.exports.getUserInfo = (req, res, next) => {
-  User.findById(req.user._id, { strictQuery: false })
+module.exports.getUserInfo = (req, res) => {
+  User.findOne()
     .then((user) => {
       res.status(200).send({
         name: user.name,
@@ -68,7 +68,9 @@ module.exports.getUserInfo = (req, res, next) => {
         _id: user._id,
       });
     })
-    .catch(next);
+    .catch(() => {
+      res.status(404).send({ message: 'Запрашиваемая страница не найдена', test: `${req}, ${req.user._id}` });
+    });
 };
 
 module.exports.editProfile = (req, res, next) => {
