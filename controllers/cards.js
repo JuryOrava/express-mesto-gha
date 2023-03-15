@@ -27,10 +27,10 @@ module.exports.getCards = (req, res, next) => {
     .catch(next);
 };
 
-function deleteValidCard(req, res, next) {
+function deleteValidCard(req, res, usetID, ownerID, next) {
   Card.findByIdAndRemove(req.params.cardId)
     .then((thisCard) => {
-      res.send({ data: thisCard });
+      res.send({ data: thisCard, masage: `юсер ид = ${typeof usetID}; овнер ид = ${typeof ownerID}` });
     })
     .catch(next);
 }
@@ -42,7 +42,7 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .then((card) => {
       if (req.user._id === card.owner._id) {
-        deleteValidCard(req, res, req.user, card.owner._id, next);
+        deleteValidCard(req, res, req.user._id, card.owner._id, next);
       } else {
         next(new ForbiddenError(`Карточка с _id:${req.params.cardId} не Ваша. Ай-яй-яй.`));
       }
