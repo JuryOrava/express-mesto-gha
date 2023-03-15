@@ -58,7 +58,7 @@ module.exports.getUsers = (req, res, next) => {
 };
 
 module.exports.getUserInfo = (req, payload, res, next) => {
-  User.findById(payload.user._id)
+  User.findById(req.user._id.toString())
     .then((user) => {
       res.status(200).send({
         name: user.name,

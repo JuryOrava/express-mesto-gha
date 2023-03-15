@@ -42,7 +42,7 @@ module.exports.deleteCard = (req, res, next) => {
       next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
     })
     .then((card) => {
-      if (userId.userId !== card.owner._id) {
+      if (userId.userId === card.owner._id.toString()) {
         deleteValidCard(req, res, req.user._id, card.owner._id, next);
       } else {
         next(new ForbiddenError(`Карточка с _id:${req.params.cardId} не Ваша. Ай-яй-яй.`));
