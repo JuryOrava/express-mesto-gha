@@ -43,8 +43,6 @@ module.exports.deleteCard = (req, res, next) => {
       if (req.user._id === card.owner._id) {
         deleteValidCard(req, res);
       } else {
-        console.log(`${req.user._id}, ${card.owner._id}`); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        res.send(`${req.user._id}, ${card.owner._id}`); // !!!!!!!!!!!!!!!!!!!!!!!!!!!!
         next(new ForbiddenError(`Карточка с _id:${req.params.cardId} не Ваша. Ай-яй-яй.`));
       }
     })

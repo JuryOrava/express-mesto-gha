@@ -60,7 +60,7 @@ module.exports.getUsers = (req, res, next) => {
 module.exports.getUserInfo = (req, res, next) => {
   User.findById(req.user._id)
     .then((user) => {
-      res.status(201).send({
+      res.status(200).send({
         name: user.name,
         about: user.about,
         avatar: user.avatar,
