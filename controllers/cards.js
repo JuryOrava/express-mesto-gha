@@ -28,7 +28,7 @@ module.exports.getCards = (req, res, next) => {
 };
 
 function deleteValidCard(req, res) {
-  return Card.findByIdAndRemove(req.params.cardId)
+  Card.findByIdAndRemove(req.params.cardId)
     .then((thisCard) => {
       res.send({ data: thisCard });
     });
@@ -40,7 +40,7 @@ module.exports.deleteCard = (req, res, next) => {
       next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
     })
     .then((card) => {
-      if (req.user._id === card.owner._id) {
+      if (req.user._id !== card.owner._id) {
         deleteValidCard(req, res);
       } else {
         next(new ForbiddenError(`Карточка с _id:${req.params.cardId} не Ваша. Ай-яй-яй.`));
