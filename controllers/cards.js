@@ -15,8 +15,9 @@ module.exports.createCard = (req, res, next) => {
     .then((card) => res.send({ data: card }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequesrError('Переданы некорректные данные при создании карточки.'));
+        return next(new BadRequesrError('Переданы некорректные данные при создании карточки.'));
       }
+      next(new Error());
     });
 };
 module.exports.getCards = (req, res, next) => {
@@ -49,8 +50,9 @@ module.exports.deleteCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequesrError(`Карточка с указанным _id:${req.params.cardId} не найдена.`));
+        return next(new BadRequesrError(`Карточка с указанным _id:${req.params.cardId} не найдена.`));
       }
+      next(new Error());
     });
 };
 
@@ -62,15 +64,16 @@ module.exports.likeCard = (req, res, next) => {
   )
     .then((card) => {
       if (card == null) {
-        next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
+        return next(new NotFoundError(`Передан несуществующий _id:${req.params.cardId} карточки.`));
       } else {
         res.send({ data: card });
       }
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequesrError('Переданы некорректные данные для постановки/снятии лайка.'));
+        return next(new BadRequesrError('Переданы некорректные данные для постановки/снятии лайка.'));
       }
+      next(new Error());
     });
 };
 
@@ -88,7 +91,8 @@ module.exports.dislikeCard = (req, res, next) => {
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        next(new BadRequesrError('Переданы некорректные данные для постановки/снятии лайка.'));
+        return next(new BadRequesrError('Переданы некорректные данные для постановки/снятии лайка.'));
       }
+      next(new Error());
     });
 };
